@@ -1,0 +1,17 @@
+server:
+  port: 7070
+spring:
+  redis:
+      host: localhost
+      port: 6379
+
+  datasource:
+    url: jdbc:mysql://111.231.209.179:3306/testdb1
+    username: root
+    password: ldgr1314
+    driver-class-name: com.mysql.jdbc.Driver
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+

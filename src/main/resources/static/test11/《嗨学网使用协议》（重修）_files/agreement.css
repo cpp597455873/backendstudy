@@ -1,0 +1,339 @@
+body {
+    margin: 0;
+}
+
+input + br {
+    display: none;
+}
+
+input + br + br {
+    display: none;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+input[type="checkbox"] + label {
+    display: inline-block;
+}
+
+label::before {
+    content: "";
+    display: inline-block;
+    width: 2.2rem;
+    background-image: url("../image/checkbox_normal.png");
+    height: 2.2rem;
+    vertical-align: middle;
+    background-size: 2.2rem;
+}
+
+input[type="checkbox"]:checked + label::before {
+    background-image: url("../image/checkbox_checked.png");
+}
+
+.protocol-container {
+    width: 100%;
+    margin: 0;
+    visibility: hidden;
+}
+
+.protocol-container-mask {
+    opacity: 0.15;
+    z-index: 300;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+}
+
+.protocol-container-inner {
+    width: 100%;
+    padding-bottom: 86px;
+    background-color: #fff;
+    z-index: 600;
+}
+
+.protocol-container-close {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    right: -28px;
+    background-color: #fff;
+}
+
+.protocol-container-close-btn {
+    margin: 7px;
+    width: 12px;
+    height: 12px;
+}
+
+.protocol-container-inner-content {
+    height: 100%;
+    margin: 0 15px;
+    font-family: 'PingFangSC-Regular';
+    color: #212121;
+    letter-spacing: 0;
+    font-size: 1.5rem;
+    line-height: 1.8rem;
+    overflow-y: auto;
+}
+
+.protocol-container-logo {
+    margin-bottom: 36px;
+    margin-top: 10px;
+}
+
+.protocol-container-title {
+    margin-top: 2rem;
+    font-weight: bold;
+    font-size: 2.2rem;
+    color: #333333;
+    letter-spacing: 0.25px;
+    margin-bottom: 1rem;
+    text-align: left;
+}
+
+.protocol-container-number {
+    text-align: right;
+    font-family: PingFangSC-Regular;
+    font-size: 1.5rem;
+    color: #212121;
+    letter-spacing: 0;
+}
+
+.protocol-container-footer {
+    position: relative;
+    bottom: 0;
+    height: 121px;
+}
+
+.protocol-container-footer-text {
+    float: left;
+}
+
+.protocol-container-print {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.protocol-container-print-image {
+    width: 8rem;
+    height: 8rem;
+}
+
+.protocol-footer-container-tip {
+    position: absolute;
+    bottom: 67px;
+    width: 100%;
+    height: 24px;
+    background: #FFECEC;
+    text-align: center;
+}
+
+.protocol-footer-container-tip-img {
+    width: 13px;
+    height: 12px;
+    vertical-align: middle;
+    line-height: 24px;
+}
+
+.protocol-footer-container-tip-text {
+    font-family: 'PingFangSC-Regular';
+    font-size: 12px;
+    color: #FE6966;
+    letter-spacing: 0.14px;
+    vertical-align: middle;
+    line-height: 24px;
+}
+
+.protocol-footer-container {
+    bottom: 0;
+    width: 100%;
+    position: fixed;
+    padding-bottom: 10px;
+    background-color: #fff;
+}
+
+.protocol-footer-active {
+    line-height: 42px;
+    text-align: center;
+}
+
+.protocol-footer-disable-checkbox {
+    top: -0.2rem;
+    position: relative;
+    margin-right: 1rem;
+    display: inline-block;
+    width: 2.2rem;
+    height: 2.2rem;
+    vertical-align: middle;
+}
+
+.protocol-footer-active-checkbox {
+    content: "";
+    display: inline-block;
+    width: 2.2rem;
+    height: 2.2rem;
+    vertical-align: middle;
+    background-size: 2.2rem;
+}
+
+.protocol-footer-active-text {
+    width: 100%;
+    font-family: 'PingFangSC-Light';
+    font-size: 1.4rem;
+    color: #666666;
+    letter-spacing: 0.41px;
+}
+
+.protocol-footer-container-btn {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    font-size: 1.6rem;
+    height: 42px;
+    line-height: 42px;
+    vertical-align: middle;
+    text-align: center;
+    color: #fff;
+    border-radius: 4px;
+    background: #4A90FF;
+    cursor: pointer;
+}
+
+.protocol-footer-container-btn--dis {
+    background: #C8C8D3;
+    border-radius: 4px;
+    color: #fff;
+}
+
+::-webkit-input-placeholder { /* WebKit browsers */
+    color: #999;
+}
+
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color: #999;
+}
+
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: #999;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color: #999;
+}
+
+.correlate-pr-temp-input {
+    outline: none;
+    overflow: hidden;
+    display: block;
+    width: 100%;
+    margin-bottom: 1.1rem;
+    font-weight: bold;
+    line-height: 3.5rem;
+    border-bottom: 1px solid #e3e3e3;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    font-size: 1.5rem;
+    text-align: left;
+    padding-bottom: 0;
+    background-color: #fff;
+}
+
+.correlate-pr-temp-inner {
+    position: absolute;
+    top: 10px;
+    left: 0;
+}
+
+.correlate-managerFillTitle label {
+    display: block;
+    position: relative;
+    padding-left: 22px;
+}
+
+.text-validate::-webkit-input-placeholder { /* WebKit browsers */
+    color: red;
+}
+
+.preview-protocol-dialog-inner-inner {
+    margin-bottom: 30px;
+}
+
+.protocol-preview-container {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.protocol-container-preview-close {
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    right: -28px;
+    background-color: #fff;
+}
+
+.protocol-container-preview-close-btn {
+    margin: 7px;
+    width: 12px;
+    height: 12px;
+}
+
+.protocol-container-validate-tip {
+    display: none;
+    position: absolute;
+    width: 281px;
+    height: 107px;
+    left: 50%;
+    top: 50%;
+    margin-top: -54px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.3);
+    border: 1px solid #d2d2d2;
+    z-index: 10001;
+}
+
+.protocol-container-validate-tip-box {
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.protocol-container-validate-tip-img {
+    display: block;
+    float: left;
+    width: 15px;
+    height: 15px;
+}
+
+.protocol-container-validate-tip-text {
+    display: block;
+    margin-left: 22px;
+}
+
+.protocol-container-validate-tip-btn {
+    font-size: 12px;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 24px;
+    color: #fff;
+    background-color: #4a90ff;
+    border-radius: 4px;
+    letter-spacing: 0.11px;
+    text-align: center;
+    line-height: 24px;
+    cursor: pointer;
+}

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>redis</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="js/vue-resource.min.js"></script>
+</head>
+<body>
+
+<div id="app">
+    this is redis test page <br/><br/>
+    <div>list test</div>
+    <div v-for="name in list1">
+        {{name}}
+    </div>
+    <input v-model="name" type="text"/>
+    <button @click="saveList1">save</button>
+</div>
+
+<script type="application/javascript">
+    var app = new Vue({
+        el: '#app',
+        data: {
+            list1: [],
+            name: ""
+        },
+        methods: {
+            saveList1: function () {
+                Vue.http.post("/saveList1.do", {name: this.name}, {emulateJSON: true}).then(function (data) {
+                    app.$data.list1 = data.data;
+                }, function (err) {
+                    alert(err);
+                })
+            },
+            getList1: function () {
+                Vue.http.get("/getList1.do").then(function (data) {
+                    app.$data.list1 = data.data;
+                })
+            }
+        },
+        mounted: function () {
+            this.$nextTick(function () {
+                this.$options.methods.getList1();
+            })
+
+        }
+    });
+</script>
+</body>
+</html>

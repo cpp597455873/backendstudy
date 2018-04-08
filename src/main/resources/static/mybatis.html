@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>redis</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="js/vue-resource.min.js"></script>
+</head>
+<body>
+
+<div id="app">
+    this is mybatis test page <br/><br/>
+    <div>list test</div>
+    <div v-for="(user,index) in userList">
+        <input v-model="user.username" type="text"/>
+        <input v-model="user.password" type="text"/>
+        <button @click="updateUser(index)">update</button>
+        <button @click="deleteUser(index)">delete</button>
+    </div>
+    <input v-model="user.username" type="text"/>
+    <input v-model="user.password" type="text"/>
+    <button @click="addUser">save</button>
+</div>
+
+<script type="application/javascript">
+    var app = new Vue({
+        el: '#app',
+        data: {
+            userList: [],
+            user: {}
+        },
+        methods: {
+            addUser: function () {
+                Vue.http.post("/addUser", this.user).then(function (data) {
+                    app.$data.user={};
+                    app.$data.userList = data.data;
+                }, function (err) {
+                    alert(err);
+                })
+            },
+            allUser: function () {
+                Vue.http.get("/allUser").then(function (data) {
+                    app.$data.userList = data.data;
+                }, function (err) {
+                    alert(err);
+                })
+            },
+            deleteUser: function (index) {
+                Vue.http.post("/deleteUser/" + this.userList[index].id).then(function (data) {
+                    app.$data.userList = data.data;
+                }, function (err) {
+                    alert(err);
+                })
+            },
+            updateUser: function (index) {
+                Vue.http.post("/updateUser", this.userList[index]).then(function (data) {
+                    app.$data.userList = data.data;
+                }, function (err) {
+                    alert(err);
+                })
+            }
+        },
+        mounted: function () {
+            this.$options.methods.allUser();
+//            this.$nextTick(function () {
+//                this.$options.methods.allUser();
+//            })
+        }
+    });
+</script>
+</body>
+</html>

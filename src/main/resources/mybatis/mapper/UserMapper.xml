@@ -1,0 +1,51 @@
+<mapper namespace="com.cpp.mybatis.UserMapperXml">
+    <resultMap id="user" type="com.cpp.mybatis.User">
+    </resultMap>
+
+    <!--private String id;-->
+    <!--private String username;-->
+    <!--private String password;-->
+    <!--private int openYear;-->
+    <sql id="Base_Column_List">
+        id, username, password, openYear
+    </sql>
+
+    <select id="allUser"  resultMap="user">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+    </select>
+
+    <!--<select id="getOne" parameterType="java.lang.Long" resultMap="BaseResultMap">-->
+        <!--SELECT-->
+        <!--<include refid="Base_Column_List"/>-->
+        <!--FROM users-->
+        <!--WHERE id = #{id}-->
+    <!--</select>-->
+
+    <!--<insert id="insertUser" parameterType="com.neo.entity.UserEntity">-->
+        <!--INSERT INTO-->
+        <!--users-->
+        <!--(userName,passWord,user_sex)-->
+        <!--VALUES-->
+        <!--(#{userName}, #{passWord}, #{userSex})-->
+    <!--</insert>-->
+
+    <!--<update id="update" parameterType="com.neo.entity.UserEntity">-->
+        <!--UPDATE-->
+        <!--users-->
+        <!--SET-->
+        <!--<if test="userName != null">userName = #{userName},</if>-->
+        <!--<if test="passWord != null">passWord = #{passWord},</if>-->
+        <!--nick_name = #{nickName}-->
+        <!--WHERE-->
+        <!--id = #{id}-->
+    <!--</update>-->
+
+    <!--<delete id="delete" parameterType="java.lang.Long">-->
+        <!--DELETE FROM-->
+        <!--users-->
+        <!--WHERE-->
+        <!--id =#{id}-->
+    <!--</delete>-->
+</mapper>

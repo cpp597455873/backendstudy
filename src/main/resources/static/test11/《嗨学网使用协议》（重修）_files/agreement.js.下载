@@ -1,0 +1,395 @@
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1]);
+}
+function getSign(paramsIn, encrypt_key) {
+    var keyArray = [];
+    for (var key in paramsIn) {
+        keyArray.push(key);
+        if (!paramsIn[key]) {
+            paramsIn[key] = "";
+        }
+    }
+    keyArray.sort();
+
+    var calculateStr = "";
+    for (var key1 in keyArray) {
+        calculateStr += keyArray[key1];
+        calculateStr += paramsIn[keyArray[key1]];
+    }
+    calculateStr += encrypt_key;
+    return CryptoJS.MD5(calculateStr).toString();
+}
+
+function toast(str) {
+    new Vue().$toast(str + "");
+}
+function openProcess() {
+    new Vue().$indicator.open();
+}
+function closeProcess() {
+    new Vue().$indicator.close();
+}
+
+$(function () {
+    // 协议内容
+    var protocolContent;
+    var protocolContentCopy;
+    var isSign;
+    var protocolTitle;
+    var protocolId;
+    var orderId;
+    var goodsId;
+    var orderGoodsId;
+    var signProtocolContent;
+    var sk;
+    var app_key;
+    var uid;
+    var encrypt_key;
+
+    sk = getParameterByName("sk");
+    app_key = getParameterByName("app_key");
+    uid = getParameterByName("uid");
+    encrypt_key = getParameterByName("encrypt_key");
+
+    protocolId = getParameterByName("protocolId");
+    orderId = getParameterByName("orderId");
+    goodsId = getParameterByName("goodsId");
+    orderGoodsId = getParameterByName("orderGoodsId");
+
+
+    var getEaParam = {};
+    getEaParam.protocolId = protocolId;
+    getEaParam.orderId = orderId;
+    getEaParam.goodsId = goodsId;
+    getEaParam.orderGoodsId = orderGoodsId;
+    getEaParam.sk = sk;
+    getEaParam.app_key = app_key;
+    getEaParam.uid = uid;
+    getEaParam.sig = getSign(getEaParam, encrypt_key);
+
+    document.title = '\u200E';
+    $.ajax({
+        url: '/eaProtocol/v1/getProtocol.do',
+        type: 'GET',
+        dataType: 'json',
+        data: getEaParam
+    }).done(function (res) {
+        if (!res || res.s !== 1) {
+            toast(res.m);
+            return;
+        }
+        document.title = res.data.protocolTitle;
+
+        $(".protocol-container").css("visibility", "visible");
+        var data = res.data;
+        $('.protocol-footer-container-tip').show();
+        // 渲染协议名称
+        protocolTitle = data.protocolTitle;
+        $('.protocol-container-title').text(protocolTitle);
+        // 渲染协议编号
+        // $('.protocol-container-number').text('协议编号：' + data.protocolNo);
+        isSign = data.protocolSign;
+        // 协议签订日期
+        var currDate = Date.now();
+        var date = new Date(currDate);
+        Y = date.getFullYear();
+        M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1);
+        D = date.getDate();
+        var nowDate = Y + '年' + M + '月' + D + '日';
+        $('.protocol-date').text(nowDate);
+
+        // 渲染协议内容
+        protocolContent = data.appEaProtocolContentVo.appEaProtocolContent.protocolContentWithStyle;
+        protocolContentCopy = protocolContent;
+        var sysControlList = data.appEaProtocolContentVo.appEaControlVos;
+
+        var classNameReg = /\^className______________________________________________________________\$/g,
+            subjectRefundReg = /\^singleSubjectRefund\$/g, // ^singleSubjectRefund$   \\n^singleSubjectRefund$
+            priceLowReg = /\^priceLow_______________________\$/g,
+            priceUpReg = /\^priceUp___________________________________________\$/g,
+            signDateReg = /\^signedDate_________\$/g,
+            agreementIdReg = /\^agreementId_________________\$/g;
+
+
+        var controlRegArr = [];
+        controlRegArr.push(classNameReg);
+        controlRegArr.push(subjectRefundReg);
+        controlRegArr.push(priceLowReg);
+        controlRegArr.push(priceUpReg);
+        controlRegArr.push(signDateReg);
+        controlRegArr.push(agreementIdReg);
+
+
+        function replaceControl(protocolContent) {
+            for (var i = 0; i < sysControlList.length; i++) {
+                for (var j = 0; j < controlRegArr.length; j++) {
+                    if (sysControlList[i].controlPlaceholder.replace(/\\\\n/g, "<br/>").match(controlRegArr[j])) {
+                        var name, span;
+                        if (controlRegArr[j] === subjectRefundReg) {
+                            var start = sysControlList[i].controlPlaceholder.indexOf("^");
+                            var end = sysControlList[i].controlPlaceholder.indexOf("$")
+                            name = sysControlList[i].controlPlaceholder.substring(start + 1, end);
+                            span = '<span>' + sysControlList[i].controlText.replace(/\^input\$/g, '<span name="' + name + '" class="' + name + '" style="font-weight: bold"></span>') + '</span>';
+                        } else {
+                            name = sysControlList[i].controlPlaceholder.substring(1, sysControlList[i].controlPlaceholder.indexOf("_"));
+                            span = '<span>' + sysControlList[i].controlText.substring(0, sysControlList[i].controlText.indexOf('^')) + '</span><span name="' + name + '" class="' + name + '" style="font-weight: bold"></span>'
+                        }
+                        var protocolContent = protocolContent.replace(controlRegArr[j], span)
+                    }
+                }
+
+                var control = sysControlList[i].controlPlaceholder.replace(/\^/g, '\\^').replace(/\$/g, '\\$');
+                if (control.indexOf('\\n') > 0) {
+                    control = control.replace('\\\\n', '\\\\\\\\n');
+                }
+                var inputBox = '<input type="text"  name="' + sysControlList[i].controlEname + '"  id="' + sysControlList[i].controlEname + '" class="correlate-pr-temp-input"/>';
+                protocolContent = protocolContent.replace(new RegExp(control, 'g'), sysControlList[i].controlText + '<br>')
+                    .replace(/\^input\$/g, inputBox);
+            }
+            return protocolContent;
+        }
+
+        var refundControlContent = protocolContent.match(/\<div class="refundRebuild"\>\<div.*\<\/div\>\<\/div\>/);
+        var wordBreak = protocolContent.match(/<div class="word-break".*?">/);
+        if(refundControlContent){
+            protocolContent = protocolContent.replace(/\<div class="refundRebuild"\>\<div.*\<\/div\>\<\/div\>/g, '<div class="refundRebuild"></div>');
+            protocolContent = protocolContent.replace(/ /g, '&nbsp;');
+            protocolContent = protocolContent.replace(/<div&nbsp;class="word-break".*?">/, wordBreak);
+            protocolContent = protocolContent.replace(/\<div&nbsp;class="refundRebuild"\>\<\/div\>/g, refundControlContent[0]);
+        }else{
+            protocolContent = protocolContent.replace(/ /g, '&nbsp;');
+            protocolContent = protocolContent.replace(/<div&nbsp;class="word-break".*?">/, wordBreak);
+            protocolContent = protocolContent.replace(/\<div&nbsp;class="refundRebuild"\>\<\/div\>/g, '');
+        }
+
+        protocolContent = replaceControl(protocolContent).replace(/\\\\n/g, '<br>');
+        $('.protocol-container-content').html(protocolContent);
+        $("span[name='signedDate']").text(nowDate);
+        $("span[name='agreementId']").text(data.protocolNo);
+        $("span[name='priceLow']").text(data.priceLow);
+        $("span[name='priceUp']").text(data.priceUp);
+        $("span[name='className']").text(data.goodsName);
+        $("span[name='singleSubjectRefund']").text(data.insurancePrice);
+        $('.protocol-container').show();
+        $('.protocol-footer-container-tip-text').text('请填写个人信息，并且勾选同意' + protocolTitle)
+        $('.protocol-footer-active-text').text('我同意' + protocolTitle);
+        $('.protocol-footer-container-btn').text('激活协议');
+    }).fail(function (err) {
+        console.log('获取失败', err);
+    })
+
+
+    $('.protocol-footer-container-btn').addClass('protocol-footer-container-btn--dis');
+
+    $('#check_agreement').on('click', function () {
+        var isChecked = $('#check_agreement').attr("src") === "image/checkbox_checked.png";
+        if (isChecked) {
+            $('.protocol-footer-container-btn').addClass('protocol-footer-container-btn--dis');
+            $('#check_agreement').attr("src", "image/checkbox_normal.png");
+        } else {
+            $('.protocol-footer-container-btn').removeClass('protocol-footer-container-btn--dis');
+            $('#check_agreement').attr("src", "image/checkbox_checked.png");
+        }
+    });
+    var onceClick = false;
+    //激活协议事件
+    $('.protocol-footer-container-btn').on('click', function (e) {
+        if (onceClick) {
+            return;
+        }
+        if ($('.protocol-footer-container-btn').hasClass("protocol-footer-container-btn--dis")) {
+            toast("请同意嗨学网使用协议");
+            return;
+        }
+
+        window.location.hash = "";
+
+        onceClick = true;
+        var clientIdReg = /^(\d{6})(\d{4})(\d{2})(\d{2})(\d{3})([0-9]|X|x)$/;
+        var phoneReg = /^1[3|4|5|7|8][0-9]\d{4,8}$/;
+        var emailReg = /^([0-9A-Za-z\-_\.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$/g;
+        var nameReg = /^[\u4e00-\u9fa5_a-zA-Z]{2,20}$/;
+
+        var clientNameMatch = /\^clientName___________________\$/g,
+            phoneMatch = /\^phone______________\$/g,
+            clientIdMatch = /\^clientId_________________________________________\$/g,
+            emailMatch = /\^email______________________________________________________________________\$/g;
+        var clientId, clientName, phone, email;
+
+        if (protocolContentCopy.match(clientNameMatch)) {
+            var flag = true;
+            var clientNames = $("input[name='clientName']");
+            for (var i = 0; i < clientNames.length; i++) {
+                var clientNameValue = clientNames.eq(i).val();
+                if (nameReg.test(clientNameValue)) {
+                    clientName = clientNames.eq(i).val();
+                    $("input[name='clientName']").attr('value', clientName);
+                    flag = true;
+                    break;
+                } else {
+                    if (!clientNameValue || clientNameValue.length === 0) {
+                        validateControl("请输入姓名");
+                    } else {
+                        validateControl("姓名格式有误，请重新输入");
+                    }
+                    $("input[name='clientName']").eq(i).attr('value', null);
+                    flag = false;
+                }
+            }
+            if (!flag) {
+                window.location.hash = "#clientName";
+                onceClick = false;
+                return;
+            }
+        }
+
+        if (protocolContentCopy.match(phoneMatch)) {
+            var flag = true;
+            var phones = $("input[name='phone']");
+            for (var i = 0; i < phones.length; i++) {
+                var phoneValue = phones.eq(i).val();
+                if (phoneReg.test(phoneValue)) {
+                    phone = phoneValue;
+                    $("input[name='phone']").attr('value', phone);
+                    flag = true;
+                    break;
+                } else {
+                    if (!phoneValue || phoneValue.length === 0) {
+                        validateControl("请输入手机号");
+                    } else {
+                        validateControl("手机号格式有误，请重新输入");
+                    }
+                    $("input[name='phone']").eq(i).attr('value', null);
+                    flag = false;
+                }
+            }
+            if (!flag) {
+                window.location.hash = "#phone";
+                onceClick = false;
+                return;
+            }
+        }
+
+        if (protocolContentCopy.match(clientIdMatch)) {
+            var flag = true;
+            var clientIds = $("input[name='clientId']");
+            for (var i = 0; i < clientIds.length; i++) {
+                var clientIdValue = clientIds.eq(i).val();
+                if (clientIdReg.test(clientIdValue)) {
+                    clientId = clientIdValue;
+                    $("input[name='clientId']").attr('value', clientId);
+                    flag = true;
+                    break;
+                } else {
+                    if (!clientIdValue || clientIdValue.length === 0) {
+                        validateControl("请输入身份证号");
+                    } else {
+                        validateControl("身份证号格式有误，请重新输入");
+                    }
+                    $("input[name='clientId']").eq(i).attr('value', null);
+                    flag = false;
+                }
+            }
+            if (!flag) {
+                window.location.hash = "#clientId";
+                onceClick = false;
+                return;
+            }
+
+        }
+
+        if (protocolContentCopy.match(emailMatch)) {
+            var flag = true;
+            var emails = $("input[name='email']");
+            for (var i = 0; i < emails.length; i++) {
+                var emailValue = emails.eq(i).val();
+                if (emailReg.test(emailValue)) {
+                    email = emailValue;
+                    $("input[name='email']").attr('value', email);
+                    flag = true;
+                    break;
+                } else {
+                    if (!emailValue || emailValue.length === 0) {
+                        validateControl("请输入邮箱");
+                    } else {
+                        validateControl("邮箱格式有误，请重新输入");
+                    }
+                    $("input[name='email']").eq(i).attr('value', null);
+                    flag = false;
+                }
+            }
+            if (!flag) {
+                window.location.hash = "#email";
+                onceClick = false;
+                return;
+            }
+        }
+
+        function validateControl(value) {
+            console.log(value)
+            toast(value);
+
+            $('.protocol-container-validate-tip-text').text(value);
+            $('.protocol-container-validate-tip').show();
+        }
+
+        if ($('.protocol-footer-container-btn').hasClass('protocol-footer-container-btn--dis')) {
+            onceClick = false;
+            return;
+        }
+
+        clientId && $("input[name='clientId']").attr('value', clientId);
+        clientName && $("input[name='clientName']").attr('value', clientName);
+        phone && $("input[name='phone']").attr('value', phone);
+        email && $("input[name='email']").attr('value', email);
+
+        $('.correlate-pr-temp-input').attr("readonly", true);
+
+        var $protocolContent = $('.protocol-container-inner-content');
+        // var $protocolContent = $('.protocol-container-footer');
+        signProtocolContent = $protocolContent[0].outerHTML;
+
+
+        var signEaParam = {};
+        try {
+            signEaParam.protocolId = protocolId;
+            signEaParam.cgpContent = signProtocolContent;
+            signEaParam.goodsId = goodsId;
+            signEaParam.email = email;
+            signEaParam.sk = sk;
+            signEaParam.app_key = app_key;
+            signEaParam.uid = uid;
+            signEaParam.orderGoodsId = orderGoodsId;
+            signEaParam.sig = getSign(signEaParam, encrypt_key);
+        } catch (e) {
+            toast(e.toString());
+            return;
+        }
+        openProcess();
+        $.ajax({
+            url: '/eaProtocol/v1/signProtocol.do',
+            type: 'POST',
+            dataType: 'json',
+            data: signEaParam
+        }).done(function (res) {
+            closeProcess();
+            onceClick = false;
+            if (res && (res.s === 1 || res.s === 2 || res.s === 3 || res.s === 4)) {
+                if (res.s === 1 && email && email.length > 0) {
+                    window.location = 'haixueweb://sign?email=' + email + '&goodsId=' + goodsId;
+                } else {
+                    window.location = 'haixueweb://sign?goodsId=' + goodsId;
+                }
+            } else {
+                toast("激活协议失败，请再试一次")
+            }
+
+        }).fail(function (e) {
+            closeProcess();
+            toast("激活协议失败，请再试一次");
+            onceClick = false;
+        })
+    })
+});
