@@ -6,7 +6,7 @@ spring:
       port: 6379
 
   datasource:
-    url: jdbc:mysql://111.231.209.179:3306/testdb1
+    url: jdbc:mysql://111.231.209.179:3306/testdb
     username: root
     password: ldgr1314
     driver-class-name: com.mysql.jdbc.Driver
