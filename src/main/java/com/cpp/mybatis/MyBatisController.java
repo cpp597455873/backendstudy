@@ -42,4 +42,12 @@ public class MyBatisController {
     }
 
 
+    @GetMapping("/allStudent")
+    public List<User> allStudent() {
+        return userMapper.allUser();
+    }
+
+
+
+
 }

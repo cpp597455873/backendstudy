@@ -10,7 +10,7 @@
     <!--提供方应用信息，用于计算依赖关系-->
     <dubbo:application name="xs_provider"/>
     <!--使用zookeeper注册中心暴露服务地址-->
-    <dubbo:registry address="zookeeper://192.168.1.54:2181"/>
+    <dubbo:registry address="zookeeper://192.168.1.120:2181"/>
     <!--用duboo在协议20880端口暴露服务-->
     <dubbo:protocol name="dubbo" port="-1"/>
     <!--声明需要暴露的服务接口-->

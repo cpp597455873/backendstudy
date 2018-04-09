@@ -1,0 +1,10 @@
+<mapper namespace="com.cpp.mybatis.StuddentMapperXml">
+    <resultMap id="students" type="com.cpp.mybatis.Students">
+    </resultMap>
+
+    <select resultType="students">
+        select * from students
+    </select>
+
+
+</mapper>

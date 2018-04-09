@@ -7,6 +7,7 @@ import java.util.List;
 
 @Mapper//加上该注解才能使用@MapperScan扫描到
 public interface UserMapper {
+
     @Insert("insert into user(username,password) values (#{username},#{password})")
     void insertUser(User user);
 
