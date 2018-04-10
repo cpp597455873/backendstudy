@@ -1,17 +1,20 @@
 server:
   port: 7070
+remotehost: 192.168.1.54
 spring:
   redis:
-      host: localhost
+      host: ${remotehost}
       port: 6379
-
   datasource:
-    url: jdbc:mysql://111.231.209.179:3306/testdb
+    url: jdbc:mysql://${remotehost}:3306/testdb
     username: root
-    password: ldgr1314
+    password: 1
     driver-class-name: com.mysql.jdbc.Driver
 
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
 
+zookeeper:
+  host:  ${remotehost}
+  port: 2181

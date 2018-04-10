@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
     <typeAliases>
         <typeAlias alias="Integer" type="java.lang.Integer"/>
@@ -9,4 +12,20 @@
         <typeAlias alias="LinkedList" type="java.util.LinkedList"/>
         <typeAlias alias="user" type="com.cpp.mybatis.User"/>
     </typeAliases>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.jdbc.Driver"/>
+                <property name="url" value="jdbc:mysql://192.168.1.54:3306/testdb"/>
+                <property name="username" value="root"/>
+                <property name="password" value="1"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+        <mapper resource="mybatis/mapper/StudentsMapper.xml"/>
+    </mappers>
+
 </configuration>

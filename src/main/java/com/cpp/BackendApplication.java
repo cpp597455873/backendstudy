@@ -12,7 +12,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @ComponentScan
 @EnableScheduling   //开启定时任务
-@ImportResource("classpath*:dubbo/config.xml")
+@ImportResource("classpath*:total_config.xml")
 @EnableCaching
 public class BackendApplication {
     public static void main(String[] args) {

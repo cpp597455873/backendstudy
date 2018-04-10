@@ -10,7 +10,7 @@ import java.util.List;
  */
 @RestController
 public class MyBatisController {
-    @Autowired
+//    @Autowired
     UserMapper userMapper;
 
     @PostMapping("/addUser")
