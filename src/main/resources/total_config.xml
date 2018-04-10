@@ -5,5 +5,6 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd">
     <!--总的配置文件，用于引入其他配置文件-->
     <import resource="config/start_up_doing.xml"/>
-    <import resource="dubbo/config.xml"/>
+    <import resource="dubbo/dubbo-provider.xml"/>
+    <!--<import resource="dubbo/dubbo-consumer.xml"/>-->
 </beans>
